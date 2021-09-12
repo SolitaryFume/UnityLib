@@ -1,26 +1,31 @@
 using System;
+using System.Diagnostics;
 using UnityEngine;
 
 namespace UnityLib.Time
 {
-    public class DelayFrameData : IAsync<DelayFrameData>,IAwaiter<DelayFrameData>, IDisposable
+    using Time = UnityEngine.Time;
+    using Debug = UnityEngine.Debug;
+
+    [DebuggerDisplay("endFrame:{endFrame}")]
+    public class DelayFrameData : IAsync<DelayFrameData>,IAwaiter<DelayFrameData>, IDisposable,IComparable<DelayFrameData>
     {
         public DelayFrameData(){}
         public DelayFrameData(int frame)
         {
             Debug.Assert(frame>0,"frame > 0 !");
-            this.delay = frame;
+            this.endFrame = Time.frameCount+frame;
         }
 
         public Action callback;
-        internal int delay;
+        internal int endFrame;
 
-        public bool IsCompleted => delay<=0;
+        public bool IsCompleted => this.endFrame <= Time.frameCount;
 
         public void Dispose()
         {
             callback = null;
-            delay = default;
+            endFrame = default;
         }
 
         public void OnCompleted(Action continuation)
@@ -36,6 +41,11 @@ namespace UnityLib.Time
         public DelayFrameData GetResult()
         {
             return this;
+        }
+
+        public int CompareTo(DelayFrameData other)
+        {
+            return this.endFrame - other.endFrame;
         }
     }
 }

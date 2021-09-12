@@ -1,20 +1,24 @@
 using System;
 using UnityEngine;
+using System.Diagnostics;
 
 namespace UnityLib.Time
 {
-    public class DelayTimeData : IAsync<DelayTimeData>,IAwaiter<DelayTimeData>,IDisposable
+    using Debug = UnityEngine.Debug;
+
+    [DebuggerDisplay("endTime:{endTime}")]
+    public class DelayTimeData : IAsync<DelayTimeData>,IAwaiter<DelayTimeData>,IDisposable,IComparable<DelayTimeData>
     {
         public DelayTimeData(){}
         public DelayTimeData(float delay)
         {
             Debug.Assert(delay>0,"frame > 0 !");
-            this.delay = delay;
+            this.endTime = UnityEngine.Time.time+delay;
         }
-        internal float delay = default;
+        internal float endTime = default;
 
         public Action callback;
-        public bool IsCompleted => delay <= 0;
+        public bool IsCompleted => UnityEngine.Time.time>=endTime;
         public DelayTimeData GetResult()=> this;
 
         public void OnCompleted(Action continuation)
@@ -30,7 +34,12 @@ namespace UnityLib.Time
         public void Dispose()
         {
             this.callback = null;
-            this.delay = default;
+            this.endTime = default;
+        }
+
+        public int CompareTo(DelayTimeData other)
+        {
+            return (int)( this.endTime - other.endTime);
         }
     }
 }

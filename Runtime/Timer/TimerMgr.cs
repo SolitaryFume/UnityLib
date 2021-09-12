@@ -7,10 +7,12 @@ using UnityLib.Pool;
 
 namespace UnityLib.Time
 {
+    using Time = UnityEngine.Time;
+
     public class TimerMgr : MonoBehaviour
     {
-        private LinkedList<DelayTimeData> m_linkTimeList;
-        private LinkedList<DelayFrameData> m_linkFrameList;
+        private List<DelayTimeData> m_timeList;
+        private List<DelayFrameData> m_frameList;
         private DisposableObjectPool<DelayTimeData> m_timeDataPool = new DisposableObjectPool<DelayTimeData>(new DefaultPooledObjectPolicy<DelayTimeData>());
         private DisposableObjectPool<DelayFrameData> m_frameDataPool = new DisposableObjectPool<DelayFrameData>(new DefaultPooledObjectPolicy<DelayFrameData>());
 
@@ -34,8 +36,8 @@ namespace UnityLib.Time
 
         private void Awake()
         {
-            m_linkTimeList = new LinkedList<DelayTimeData>();
-            m_linkFrameList = new LinkedList<DelayFrameData>();
+            m_timeList = new List<DelayTimeData>(10);
+            m_frameList = new List<DelayFrameData>(10);
             StartCoroutine(nameof(Loop));
         }
 
@@ -47,49 +49,39 @@ namespace UnityLib.Time
         {
             while (true)
             {
-                var dataTime = UnityEngine.Time.deltaTime;
-
-                //timeloop
-                var timeNode = m_linkTimeList.First;
-                while (timeNode != null)
-                {
-                    var next = timeNode.Next;
-                    var data = timeNode.Value;
-                    data.delay-=dataTime;
-                    if (data.delay <= 0)
-                    {
-                        data.callback?.Invoke();
-                        m_linkTimeList.Remove(timeNode);
-                        m_timeDataPool.Return(data);
-                    }
-                    timeNode = next;
-                }
-
-                //frameloop
-                var frameNode = m_linkFrameList.First;
-                while(frameNode!=null)
-                {
-                    var next = frameNode.Next;
-                    var data = frameNode.Value;
-                    data.delay--;
-                    if(data.delay<=0)
-                    {
-                        data.callback?.Invoke();
-                        m_linkFrameList.Remove(frameNode);
-                        m_frameDataPool.Return(data);
-                    }
-                    frameNode = next;
-                }
-
+                TimeLoop();
+                FrameLoop();
                 yield return null;
+            }
+        }
+
+        private void TimeLoop()
+        {
+            var time = Time.time;
+            while (m_timeList.Count>0 && m_timeList[0].endTime<=time)
+            {
+                m_timeList[0].callback?.Invoke();
+                m_timeList.RemoveAt(0);
+            }
+        }
+
+        private void FrameLoop()
+        {
+            var frameCount = Time.frameCount;
+            while (m_frameList.Count > 0 && m_frameList[0].endFrame <= frameCount)
+            {
+                m_frameList[0].callback?.Invoke();
+                m_frameList.RemoveAt(0);
             }
         }
 
         public static DelayTimeData DelayTime(float second)
         {
+            if (second<=0)
+                throw new ArgumentOutOfRangeException(nameof(second));
             var temp = GetDelayTimeData();
-            temp.delay = second;
-            TimerMgr.Instance.m_linkTimeList.AddLast(temp);
+            temp.endTime = UnityEngine.Time.time + second;
+            TimerMgr.Instance.m_timeList.SoltAdd(temp);
             return temp;
         }
 
@@ -100,9 +92,11 @@ namespace UnityLib.Time
 
         public static DelayFrameData DelayFrame(int frame)
         {
+            if (frame <= 0)
+                throw new ArgumentOutOfRangeException(nameof(frame));
             var temp = GetDelayFrameData();
-            temp.delay = frame;
-            TimerMgr.Instance.m_linkFrameList.AddLast(temp);
+            temp.endFrame = Time.frameCount + frame;
+            TimerMgr.Instance.m_frameList.SoltAdd(temp);
             return temp;
         }
 
@@ -110,28 +104,28 @@ namespace UnityLib.Time
         {
             if(data==null)
                 throw new ArgumentNullException(nameof(data));
-            TimerMgr.Instance.m_linkTimeList.AddLast(data);
+            TimerMgr.Instance.m_timeList.SoltAdd(data);
         }
 
         public static void StartDelay(DelayFrameData data)
         {
             if(data==null)
                 throw new ArgumentNullException(nameof(data));
-            TimerMgr.Instance.m_linkFrameList.AddLast(data);
+            TimerMgr.Instance.m_frameList.SoltAdd(data);
         }
 
         public static void StopDelay(DelayTimeData data)
         {
             if(data==null)
                 throw new ArgumentNullException(nameof(data));
-            TimerMgr.Instance.m_linkTimeList.AddLast(data);
+            TimerMgr.Instance.m_timeList.Remove(data);
         }
 
         public static void StopDelay(DelayFrameData data)
         {
             if(data==null)
                 throw new ArgumentNullException(nameof(data));
-            TimerMgr.Instance.m_linkFrameList.Remove(data);
+            TimerMgr.Instance.m_frameList.Remove(data);
         }
     }
 }
