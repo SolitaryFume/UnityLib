@@ -4,7 +4,6 @@ using System.Diagnostics;
 
 namespace UnityLib.Time
 {
-    using Debug = UnityEngine.Debug;
 
     [DebuggerDisplay("endTime:{endTime}")]
     public class DelayTimeData : IAsync<DelayTimeData>,IAwaiter<DelayTimeData>,IDisposable,IComparable<DelayTimeData>

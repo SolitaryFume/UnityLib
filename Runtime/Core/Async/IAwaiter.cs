@@ -1,4 +1,9 @@
-public interface IAwaiter<T>
+namespace UnityLib
 {
-    T GetAwaiter();
+
+    public interface IAwaiter<T>
+    {
+        T GetAwaiter();
+
+    }
 }

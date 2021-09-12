@@ -5,7 +5,6 @@ using UnityEngine;
 namespace UnityLib.Time
 {
     using Time = UnityEngine.Time;
-    using Debug = UnityEngine.Debug;
 
     [DebuggerDisplay("endFrame:{endFrame}")]
     public class DelayFrameData : IAsync<DelayFrameData>,IAwaiter<DelayFrameData>, IDisposable,IComparable<DelayFrameData>
