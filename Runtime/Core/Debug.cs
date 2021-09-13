@@ -10,8 +10,6 @@ namespace UnityLib
     public static class Debug
     {
         [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void Log(object message)
         {
@@ -19,26 +17,20 @@ namespace UnityLib
         }
 
         [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void Log(object message, Object context)
         {
-            UnityEngine.Debug.Log(message,context);
+            UnityEngine.Debug.Log(message, context);
         }
 
         [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogFormat(string format, params object[] args)
         {
-            UnityEngine.Debug.LogFormat(format,args:args);
+            UnityEngine.Debug.LogFormat(format, args: args);
         }
 
         [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogFormat(Object context, string format, params object[] args)
         {
@@ -46,14 +38,14 @@ namespace UnityLib
         }
 
         [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogFormat(LogType logType, LogOption logOptions, Object context, string format, params object[] args)
         {
-            UnityEngine.Debug.LogFormat(logType, logOptions, context, format,args: args);
+            UnityEngine.Debug.LogFormat(logType, logOptions, context, format, args: args);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogError(object message)
@@ -61,6 +53,8 @@ namespace UnityLib
             UnityEngine.Debug.LogError(message);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogError(object message, Object context)
@@ -68,6 +62,8 @@ namespace UnityLib
             UnityEngine.Debug.LogError(message, context);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogErrorFormat(string format, params object[] args)
@@ -75,13 +71,17 @@ namespace UnityLib
             UnityEngine.Debug.LogErrorFormat(format, args: args);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogErrorFormat(Object context, string format, params object[] args)
         {
-            UnityEngine.Debug.LogErrorFormat(context,format, args: args);
+            UnityEngine.Debug.LogErrorFormat(context, format, args: args);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogException(Exception exception)
@@ -89,115 +89,129 @@ namespace UnityLib
             UnityEngine.Debug.LogException(exception);
         }
 
+        [Conditional("Log")]
+        [Conditional("LogWarning")]
         [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogException(Exception exception, Object context)
         {
-            UnityEngine.Debug.LogException(exception,context);
+            UnityEngine.Debug.LogException(exception, context);
         }
 
+        [Conditional("Log")]
         [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogWarning(object message)
         {
             UnityEngine.Debug.LogWarning(message);
         }
 
+        [Conditional("Log")]
         [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogWarning(object message, Object context)
         {
             UnityEngine.Debug.LogWarning(message, context);
         }
 
+        [Conditional("Log")]
         [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogWarningFormat(string format, params object[] args)
         {
             UnityEngine.Debug.LogWarningFormat(format, args: args);
         }
 
+        [Conditional("Log")]
         [Conditional("LogWarning")]
-        [Conditional("LogError")]
         [DebuggerHidden]
         public static void LogWarningFormat(Object context, string format, params object[] args)
         {
-            UnityEngine.Debug.LogWarningFormat(context,format, args: args);
+            UnityEngine.Debug.LogWarningFormat(context, format, args: args);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition)
         {
             UnityEngine.Debug.Assert(condition);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition, Object context)
         {
             UnityEngine.Debug.Assert(condition, context);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition, object message)
         {
             UnityEngine.Debug.Assert(condition, message);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition, string message)
         {
             UnityEngine.Debug.Assert(condition, message);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition, object message, Object context)
         {
             UnityEngine.Debug.Assert(condition, message, context);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void Assert(bool condition, string message, Object context)
         {
             UnityEngine.Debug.Assert(condition, message, context);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void AssertFormat(bool condition, string format, params object[] args)
         {
             UnityEngine.Debug.AssertFormat(condition, format, args: args);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void AssertFormat(bool condition, Object context, string format, params object[] args)
         {
-            UnityEngine.Debug.AssertFormat(condition, context,format, args: args);
+            UnityEngine.Debug.AssertFormat(condition, context, format, args: args);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void LogAssertion(object message)
         {
             UnityEngine.Debug.LogAssertion(message);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void LogAssertion(object message, Object context)
         {
             UnityEngine.Debug.LogAssertion(message, context);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void LogAssertionFormat(string format, params object[] args)
         {
             UnityEngine.Debug.LogAssertionFormat(format, args: args);
         }
 
-        [Conditional("UNITY_ASSERTIONS")][DebuggerHidden]
+        [Conditional("UNITY_ASSERTIONS")]
+        [DebuggerHidden]
         public static void LogAssertionFormat(Object context, string format, params object[] args)
         {
-            UnityEngine.Debug.LogAssertionFormat(context,format, args: args);
+            UnityEngine.Debug.LogAssertionFormat(context, format, args: args);
         }
     }
 }
