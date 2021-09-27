@@ -1,6 +1,8 @@
-﻿namespace UnityLib.Data
+﻿using System.Collections.Generic;
+
+namespace UnityLib.Data
 {
-    public class LanguageCfg : IConfig<int>
+    public struct LanguageCfg : IConfig<int>
     {
         private int id;
         private string content;

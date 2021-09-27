@@ -1,0 +1,43 @@
+{
+    "name": "UnityLib.Test",
+    "rootNamespace": "",
+    "references": [
+        "GUID:667cf05d877398645b666c0cbca3da95",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3",
+        "GUID:67d076a8db1587b498c455b0ae35bff4"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "NPOI.dll",
+        "NPOI.OOXML.dll",
+        "NPOI.OpenXml4Net.dll",
+        "BouncyCastle.Crypto.dll",
+        "ICSharpCode.SharpZipLib.dll",
+        "NPOI.OpenXmlFormats.dll",
+        "System.Memory.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [
+        {
+            "name": "com.zjc",
+            "expression": "",
+            "define": ""
+        },
+        {
+            "name": "com.unity.test-framework",
+            "expression": "",
+            "define": ""
+        }
+    ],
+    "noEngineReferences": false
+}
