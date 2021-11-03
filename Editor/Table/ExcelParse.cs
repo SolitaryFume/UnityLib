@@ -32,7 +32,7 @@ namespace UnityLibEditor
             Debug.Log($"{typeof(T)} Parse Succeed : from {filePath} >> to {savePath}");
         }
 
-        private static DataTable ReadExcel(string filePath)
+        public static DataTable ReadExcel(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
                 throw new ArgumentException($"{nameof(filePath)} is null or empty !");
@@ -53,7 +53,7 @@ namespace UnityLibEditor
             bool isMove = rows.MoveNext();
             if (isMove)
             {
-                var heading = rows.Current as IRow; //±íÍ·
+                var heading = rows.Current as IRow; //ï¿½ï¿½Í·
 
                 var columnNum = 0;
                 for (int i = 0; i < heading.LastCellNum; i++)
@@ -106,14 +106,14 @@ namespace UnityLibEditor
                         {
                             var marshalAs = property.GetCustomAttribute<MarshalAsAttribute>();
                             if (marshalAs == null)
-                                throw new TableException($"{ty}.{property.Name}Ã»ÓÐMarshalAsAttribute±ê¼Ç");
+                                throw new TableException($"{ty}.{property.Name}Ã»ï¿½ï¿½MarshalAsAttributeï¿½ï¿½ï¿½");
                             var elementType = property.FieldType.GetElementType();
                             var arr = Array.CreateInstance(elementType, marshalAs.SizeConst);
                             for (int j = 0; j < marshalAs.SizeConst; j++)
                             {
                                 var key = $"{property.Name}[{j}]";
                                 if (row.IsNull(key))
-                                    throw new TableException($"Ã»ÓÐ¶ÔÓ¦ÁÐ{key}");
+                                    throw new TableException($"Ã»ï¿½Ð¶ï¿½Ó¦ï¿½ï¿½{key}");
                                 else
                                     arr.SetValue(ChangeType(row[key], elementType), j);
                             }
