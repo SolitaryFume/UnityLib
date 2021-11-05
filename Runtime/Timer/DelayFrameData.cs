@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using UnityEngine;
 
-namespace UnityLib.Time
+namespace UnityLib
 {
     using Time = UnityEngine.Time;
 

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using System.Diagnostics;
 
-namespace UnityLib.Time
+namespace UnityLib
 {
 
     [DebuggerDisplay("endTime:{endTime}")]

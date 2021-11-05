@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Diagnostics;
+using UnityEditor;
 using UnityEngine;
 using UnityLib.Pool;
 
-namespace UnityLib.Time
+namespace UnityLib
 {
     using Time = UnityEngine.Time;
 
@@ -31,7 +32,7 @@ namespace UnityLib.Time
             }
         }
 
-        private static DelayTimeData GetDelayTimeData() =>Instance.m_timeDataPool.Get();
+        private static DelayTimeData GetDelayTimeData() => Instance.m_timeDataPool.Get();
         private static DelayFrameData GetDelayFrameData() => Instance.m_frameDataPool.Get();
 
         private void Awake()
@@ -58,7 +59,7 @@ namespace UnityLib.Time
         private void TimeLoop()
         {
             var time = Time.time;
-            while (m_timeList.Count>0 && m_timeList[0].endTime<=time)
+            while (m_timeList.Count > 0 && m_timeList[0].endTime <= time)
             {
                 m_timeList[0].callback?.Invoke();
                 m_timeList.RemoveAt(0);
@@ -77,7 +78,7 @@ namespace UnityLib.Time
 
         public static DelayTimeData DelayTime(float second)
         {
-            if (second<=0)
+            if (second <= 0)
                 throw new ArgumentOutOfRangeException(nameof(second));
             var temp = GetDelayTimeData();
             temp.endTime = UnityEngine.Time.time + second;
@@ -102,30 +103,62 @@ namespace UnityLib.Time
 
         public static void StartDelay(DelayTimeData data)
         {
-            if(data==null)
+            if (data == null)
                 throw new ArgumentNullException(nameof(data));
             TimerMgr.Instance.m_timeList.SoltAdd(data);
         }
 
         public static void StartDelay(DelayFrameData data)
         {
-            if(data==null)
+            if (data == null)
                 throw new ArgumentNullException(nameof(data));
             TimerMgr.Instance.m_frameList.SoltAdd(data);
         }
 
         public static void StopDelay(DelayTimeData data)
         {
-            if(data==null)
+            if (data == null)
                 throw new ArgumentNullException(nameof(data));
             TimerMgr.Instance.m_timeList.Remove(data);
         }
 
         public static void StopDelay(DelayFrameData data)
         {
-            if(data==null)
+            if (data == null)
                 throw new ArgumentNullException(nameof(data));
             TimerMgr.Instance.m_frameList.Remove(data);
         }
     }
+
+#if UNITY_EDITOR
+    internal static class CoroutineList
+    {
+        public static void Delete(this List<CoroutineInfo> list, Coroutine coroutine)
+        {
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (coroutine == null)
+                throw new ArgumentNullException(nameof(coroutine));
+            for (int i = 0; i < list.Count; i++)
+            {
+                var info = list[i];
+                if (info != null && info.Coroutine == coroutine)
+                {
+                    list.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class CoroutineInfo
+    {
+        public string CrateTime;
+        public string[] Trace;
+        public Coroutine Coroutine;
+    }
+
+#endif
+
 }
