@@ -9,12 +9,11 @@ namespace UnityLib.Asset
     {
         public AddrsAssetProvide()
         {
-            // Addressables.InitializeAsync().WaitForCompletion();
+            
         }
 
         public T Load<T>(string key) where T : Object
         {
-            // Addressables.LoadSceneAsync
             return Addressables.LoadAssetAsync<T>(key).WaitForCompletion();
         }
 

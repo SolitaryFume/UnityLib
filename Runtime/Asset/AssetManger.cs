@@ -19,8 +19,7 @@ namespace UnityLib.Asset
             {
                 if (m_assetProvide == null)
                 {
-                    // m_assetProvide = ServiceMgr.GetService<IAssetProvide>();
-                    m_assetProvide = new AddrsAssetProvide();
+                    m_assetProvide = ServiceMgr.GetService<IAssetProvide>();
                 }
                 return m_assetProvide;
             }

@@ -6,7 +6,7 @@ namespace UnityLib.Lua
 {
     public static class LuaMgr
     {
-        public static ILuaMgr m_core;
+        static ILuaMgr m_core;
 
         private static ILuaMgr core
         {
@@ -14,7 +14,7 @@ namespace UnityLib.Lua
             {
                 if (m_core == null)
                 {
-                    // m_core = new XLuaMgr();
+                    m_core = ServiceMgr.GetService<ILuaMgr>();
                 }
                 return m_core;
             }
