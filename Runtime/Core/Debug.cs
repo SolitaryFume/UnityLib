@@ -9,7 +9,7 @@ namespace UnityLib
 {
     public static class Debug
     {
-        [Conditional("Log")]
+        //[Conditional("Log")]
         [DebuggerHidden]
         public static void Log(object message)
         {

@@ -130,35 +130,4 @@ namespace UnityLib
         }
     }
 
-#if UNITY_EDITOR
-    internal static class CoroutineList
-    {
-        public static void Delete(this List<CoroutineInfo> list, Coroutine coroutine)
-        {
-            if (list == null)
-                throw new ArgumentNullException(nameof(list));
-            if (coroutine == null)
-                throw new ArgumentNullException(nameof(coroutine));
-            for (int i = 0; i < list.Count; i++)
-            {
-                var info = list[i];
-                if (info != null && info.Coroutine == coroutine)
-                {
-                    list.RemoveAt(i);
-                    return;
-                }
-            }
-        }
-    }
-
-    [System.Serializable]
-    public class CoroutineInfo
-    {
-        public string CrateTime;
-        public string[] Trace;
-        public Coroutine Coroutine;
-    }
-
-#endif
-
 }

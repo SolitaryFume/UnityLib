@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,6 +35,16 @@ namespace UnityLib.Lua
         {
             core?.Dispose();
             m_core = null;
+        }
+
+        public static void GC()
+        {
+            m_core?.GC();
+        }
+
+        public static void Tick()
+        {
+            m_core?.Tick();
         }
     }
 }

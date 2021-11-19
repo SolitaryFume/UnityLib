@@ -6,6 +6,37 @@ using UnityEngine;
 
 namespace UnityLib
 {
+#if UNITY_EDITOR
+    internal static class CoroutineList
+    {
+        public static void Delete(this List<CoroutineInfo> list, Coroutine coroutine)
+        {
+            if (list == null)
+                throw new ArgumentNullException(nameof(list));
+            if (coroutine == null)
+                throw new ArgumentNullException(nameof(coroutine));
+            for (int i = 0; i < list.Count; i++)
+            {
+                var info = list[i];
+                if (info != null && info.Coroutine == coroutine)
+                {
+                    list.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+    }
+
+    [System.Serializable]
+    public class CoroutineInfo
+    {
+        public string CrateTime;
+        public string[] Trace;
+        public Coroutine Coroutine;
+    }
+
+#endif
+
     public class CoroutineMgr:MonoBehaviour
     {
         private static CoroutineMgr _instance;
@@ -23,9 +54,6 @@ namespace UnityLib
             }
         }
         
-
-        
-
         public static Coroutine AddCoroutine(IEnumerator routine)
         {
             var result = Instance.StartCoroutine(routine);
@@ -49,7 +77,32 @@ namespace UnityLib
             Instance.StopCoroutine(routine);
         }
 
-        #if UNITY_EDITOR
+        public static Coroutine InvokeRepeating(Action action,float time,float repeatRate)
+        {
+            if(action==null)
+                throw new ArgumentNullException(nameof(action));
+            if(time<0) 
+                throw new ArgumentOutOfRangeException(nameof(time));
+            if (repeatRate <= 0)
+                throw new ArgumentOutOfRangeException(nameof(repeatRate));
+
+            IEnumerator leep(Action action,float time,float repeatRate)
+            { 
+                yield return new WaitForSeconds(time);
+                action();
+                var repeatRateWait = new WaitForSeconds(repeatRate);
+
+                while (true)
+                {
+                    yield return repeatRateWait;
+                    action();
+                }
+            }
+
+            return AddCoroutine(leep(action, time, repeatRate));
+        }
+
+#if UNITY_EDITOR
         [SerializeField] private List<CoroutineInfo> list = new List<CoroutineInfo>(20);
         #endif
     }
