@@ -6,7 +6,7 @@ namespace UnityLib.Data
     public static class TableUtility
     {
         public static T[] AnalysisData<T>(byte[] data) 
-            where T : struct
+            where T : class
         { 
             if(data==null)
                 throw new ArgumentNullException("data is a null !");

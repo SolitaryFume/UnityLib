@@ -8,7 +8,7 @@ namespace UnityLib.Asset
     {
         public AddrsAssetProvide()
         {
-            
+
         }
 
         public T Load<T>(string key) where T : Object

@@ -8,28 +8,21 @@ using NPOI.SS.UserModel;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using UnityLib.Data;
+using UnityLib;
 
 namespace UnityLibEditor
 {
 
-    public class TableException : Exception
-    {
-        public TableException(string message) : base(message)
-        {
-
-        }
-    }
 
     public static class ExcelParseHelp
     {
         public static void Parse<T>(string filePath, string savePath)
-            where T : struct
         {
             var dt = ReadExcel(filePath);
             var list = DataTableParse<T>(dt);
             var data = ListToData(list);
             Save(data, savePath);
-            Debug.Log($"{typeof(T)} Parse Succeed : from {filePath} >> to {savePath}");
+            UnityLib.Debug.Log($"{typeof(T)} Parse Succeed : from {filePath} >> to {savePath}");
         }
 
         public static DataTable ReadExcel(string filePath)
@@ -135,7 +128,6 @@ namespace UnityLibEditor
         }
 
         private static byte[] ListToData<T>(List<T> list)
-                where T : struct
         {
             if (list == null)
                 throw new ArgumentNullException("list is null !");

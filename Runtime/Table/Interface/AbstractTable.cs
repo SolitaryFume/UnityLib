@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System;
 
 namespace UnityLib.Data
 {
-    public abstract class Table<TKey, TValue> : ITableConfig<TKey, TValue>
-        where TValue : struct, IConfig<TKey>
+    public abstract class AbstractTable<TKey, TValue> : ITableConfig<TKey, TValue>
+        where TValue : IConfig<TKey>
         where TKey : struct
     {
-        protected IReadOnlyDictionary<TKey, TValue> m_dir;
-        public Table(TValue[] array)
+        protected Dictionary<TKey, TValue> m_dir;
+        public AbstractTable(IEnumerable<TValue> collecttion)
         {
             var dir = new Dictionary<TKey, TValue>();
-            foreach (var item in array)
+            foreach (var item in collecttion)
             {
                 dir.Add(item.Id, item);
             }
@@ -28,6 +30,11 @@ namespace UnityLib.Data
         public bool ContainsKey(TKey key)=> m_dir.ContainsKey(key);
 
         public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator()=> m_dir.GetEnumerator();
+
+        public virtual TValue GetValue(TKey key)
+        {
+            return this[key];
+        }
 
         public bool TryGetValue(TKey key, out TValue value) => m_dir.TryGetValue(key, out value);
 

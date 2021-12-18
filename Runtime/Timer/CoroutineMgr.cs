@@ -104,7 +104,7 @@ namespace UnityLib
 
 #if UNITY_EDITOR
         [SerializeField] private List<CoroutineInfo> list = new List<CoroutineInfo>(20);
-        #endif
+#endif
     }
 
 }

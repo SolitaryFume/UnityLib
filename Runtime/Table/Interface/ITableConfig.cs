@@ -6,6 +6,6 @@ namespace UnityLib.Data
         where TKey : struct
         where TValue : IConfig<TKey>
     {
-
+        public TValue GetValue(TKey key);
     }
 }

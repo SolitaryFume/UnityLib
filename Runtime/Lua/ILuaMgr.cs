@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 namespace UnityLib.Lua
 {
@@ -11,3 +12,4 @@ namespace UnityLib.Lua
         void Tick();
     }
 }
+

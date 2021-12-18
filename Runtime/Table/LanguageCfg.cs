@@ -2,11 +2,9 @@
 
 namespace UnityLib.Data
 {
-    public struct LanguageCfg : IConfig<int>
+    public class LanguageCfg : AbstractConfig<int>
     {
-        private int id;
         private string content;
-        public int Id => id;
         public string Content => content;
     }
 }

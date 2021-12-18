@@ -1,8 +1,18 @@
+using log4net;
+using log4net.Appender;
+using log4net.Config;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Layout.Pattern;
+using log4net.Repository;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using UnityEngine;
+using static log4net.Appender.FileAppender;
 using Object = UnityEngine.Object;
 
 namespace UnityLib
@@ -44,9 +54,9 @@ namespace UnityLib
             UnityEngine.Debug.LogFormat(logType, logOptions, context, format, args: args);
         }
 
-        [Conditional("Log")]
-        [Conditional("LogWarning")]
-        [Conditional("LogError")]
+        //[Conditional("Log")]
+        //[Conditional("LogWarning")]
+        //[Conditional("LogError")]
         [DebuggerHidden]
         public static void LogError(object message)
         {
@@ -212,6 +222,52 @@ namespace UnityLib
         public static void LogAssertionFormat(Object context, string format, params object[] args)
         {
             UnityEngine.Debug.LogAssertionFormat(context, format, args: args);
+        }
+    }
+
+    public class LogUtility
+    {
+        public static ILog log;
+
+        static LogUtility()
+        {
+            ILoggerRepository repository = log4net.LogManager.GetRepository();
+            FileAppender fileAppender = new FileAppender();
+            fileAppender.Name = "LogFileAppender";
+            fileAppender.File = @"C:\Users\admin\Desktop\Log\Test.log";
+            fileAppender.AppendToFile = true;
+            fileAppender.LockingModel = new MinimalLock();
+            PatternLayout patternLayout = new PatternLayout
+            {
+                ConversionPattern = "[%d{hh:mm:ss}] [%thread] [%-5level]>>>%message%newline"
+            };
+            //patternLayout.AddConverter("stack", typeof(StackTraceConverter));
+            patternLayout.ActivateOptions();
+            fileAppender.Layout = patternLayout;
+            fileAppender.Encoding = Encoding.UTF8;
+            fileAppender.ActivateOptions();
+
+            BasicConfigurator.Configure(repository, fileAppender);
+            log = LogManager.GetLogger(repository.Name);
+        }
+    }
+
+    public class CustomPatternLayout : PatternLayout
+    {
+        private const string Key_Stack = "stack";
+
+        public CustomPatternLayout()
+        {
+            this.AddConverter(Key_Stack,typeof(StackTraceConverter));
+        }
+    }
+
+    public class StackTraceConverter : PatternLayoutConverter
+    {
+        protected override void Convert(TextWriter writer, LoggingEvent loggingEvent)
+        {
+            var stack = new StackTrace(13,true);
+            writer.Write(stack);
         }
     }
 }

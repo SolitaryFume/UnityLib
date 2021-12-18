@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace UnityLib.Data
+namespace UnityLib
 {
     public static class SerializeHelp
     {
-        public static byte[] StructToBytes<T>(in T structure) where T : struct
+        public static byte[] StructToBytes<T>(in T structure)
         {
             var size = Marshal.SizeOf<T>();
             var buffer = Marshal.AllocHGlobal(size);
@@ -17,12 +17,12 @@ namespace UnityLib.Data
                 return result;
             }
             finally
-            { 
+            {
                 Marshal.FreeHGlobal(buffer);
             }
         }
 
-        public static bool BytesToStruct<T>(byte[] bytes, out T structure) where T : struct
+        public static bool BytesToStruct<T>(byte[] bytes, out T structure)
         {
             var size = Marshal.SizeOf<T>();
             var buffer = Marshal.AllocHGlobal(size);
@@ -44,7 +44,7 @@ namespace UnityLib.Data
             }
         }
 
-        public static T[] BytesToStructArray<T>(byte[] bytes) where T : struct
+        public static T[] BytesToStructArray<T>(byte[] bytes)
         {
             var size = Marshal.SizeOf<T>();
             var count = bytes.Length / size;
@@ -64,6 +64,26 @@ namespace UnityLib.Data
             return array;
         }
 
+        public static byte[] StructArrayToBytes<T>(T[] array)
+        {
+            var size = Marshal.SizeOf<T>();
+            var buffer = Marshal.AllocHGlobal(size);
+            byte[] result = new byte[size * array.Length];
+            try
+            {
+                for (int i = 0; i < array.Length; i++)
+                {
+                    var structure = array[i];
+                    Marshal.StructureToPtr(structure, buffer, false);
+                    Marshal.Copy(buffer, result, i * size, size);
+                }
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+            return result;
+        }
     }
 }
 

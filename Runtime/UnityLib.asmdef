@@ -11,7 +11,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "protobuf-net.Core.dll",
-        "protobuf-net.dll"
+        "protobuf-net.dll",
+        "log4net.dll"
     ],
     "autoReferenced": true,
     "defineConstraints": [],

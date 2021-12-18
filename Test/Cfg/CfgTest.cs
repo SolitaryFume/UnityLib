@@ -12,23 +12,23 @@ using UnityLib.Data;
 using System.Linq;
 using System.Runtime.Serialization;
 
-public enum A
+public enum A:int
 { 
-    A,
+    A = 10,
     B,
     C,
 }
 
 [Serializable]
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public unsafe struct TestCfg : IConfig<int>
+public class TestCfg : IConfig<int>
 {
-    [SerializeField] private int id;
-    [SerializeField] private byte count;
-    [SerializeField] private bool tbool;
-    [SerializeField] private A aenum;
-    [MarshalAs(UnmanagedType.ByValArray,SizeConst = 2)]
-    [SerializeField] private byte[] arr;
+    [SerializeField] public int id;
+    [SerializeField] public byte count;
+    [SerializeField] public bool tbool;
+    [SerializeField] public A aenum;
+    // [MarshalAs(UnmanagedType.ByValArray,SizeConst = 2)]
+    // [SerializeField] public byte[] arr;
 
     public int Id => id;
 
@@ -39,24 +39,23 @@ public unsafe struct TestCfg : IConfig<int>
 }
 
 
-public class TestTb : Table<int, TestCfg>
+public class TestTb : AbstractFileTable<int, TestCfg>
 {
-    public TestTb(TestCfg[] array) : base(array)
+    public TestTb(string filePtah,TableOption option) : base(filePtah,option)
     {
-        
     }
 }
 
 public class CfgTest_Frame
 {
-    [Test]
+    // [Test]
     public void TableTest()
     {
         ReadXLS();
         ReadData();
     }
 
-    [Test]
+    // [Test]
     public void ReadXLS()
     {
         var path = @"H:\共享\Test.xls";
@@ -64,11 +63,50 @@ public class CfgTest_Frame
         UnityLibEditor.ExcelParseHelp.Parse<TestCfg>(path, savePath);
     }
 
-    [Test]
+    // [Test]
     public void ReadData()
     {
         var savePath = @"H:\共享\Test.data";
         var data = File.ReadAllBytes(savePath);
         var arr = TableUtility.AnalysisData<TestCfg>(data);
+    }
+
+    [Test]
+    public void FileTableWrite()
+    {
+        var path = @"C:\Git\tb.data";
+        var list = new List<TestCfg>(){
+            new TestCfg(){
+                id = 1,
+                aenum = A.A,
+            },
+            new TestCfg(){
+                id = 2,
+                aenum = A.B
+            },
+            new TestCfg()
+            {
+                id = 3,
+                aenum = A.C
+            }
+        };
+        File.Delete(path);
+        var fileSteam = File.Create(path);
+        foreach (var item in list)
+        {
+            var data = UnityLib.SerializeHelp.StructToBytes(item);
+            fileSteam.Write(data,0,data.Length);
+            
+        }
+        fileSteam.Close();
+    }
+
+    [Test]
+    public void FileTableRead()
+    {
+        var path = @"C:\Git\tb.data";
+        var db = new TestTb(path,TableOption.AutoSave);
+        var cfg = db[1];
+        Debug.Log(cfg.ToString());
     }
 };
