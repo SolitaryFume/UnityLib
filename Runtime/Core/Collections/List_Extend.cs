@@ -10,7 +10,7 @@ namespace UnityLib
         public static bool SoltAdd<T>(this List<T> self, T item)
         {
             var index = self.BinarySearch(item);
-            index = index>0?index:-index;
+            index = index>0?index:~index;
             self.Insert(index,item);
             return true;
         }

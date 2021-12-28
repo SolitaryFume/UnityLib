@@ -108,7 +108,7 @@ namespace UnityLib.Data
             }
 
             var index = keys.BinarySearch(key);
-            if(index==-1)
+            if(index<0)
             {
                 Debug.LogError($"no Find {key}");
                 value = default;
