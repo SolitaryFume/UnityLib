@@ -9,6 +9,8 @@ namespace UnityLib.Pool
     public class DefaultObjectPool<T> : ObjectPool<T> where T : class
     {
         private protected readonly T[] _items;
+
+        private int _count; 
         private protected readonly IPooledObjectPolicy<T> _policy;
         private protected readonly bool _isDefaultPolicy;
         private protected readonly PooledObjectPolicy<T> _fastPolicy;
@@ -36,28 +38,33 @@ namespace UnityLib.Pool
         public override T Get()
         {
             T item;
-            for (int i = 0; i < _items.Length; i++)
+            if(_count>0)
             {
-                item = _items[i];
-                if (item != null)
-                {
-                    _items[i] = null;
-                    return item;
-                }
+                item = _items[--_count];
+                _items[_count] = null;
             }
-            item = Create();
+            else
+            {
+                item = Create();
+            }
             return item;
         }
         
         [MethodImpl(MethodImplOptions.NoInlining)]
         private T Create()=>_fastPolicy?.Create()??_policy.Create();
 
-        public override void Return(T obj)
+        public override bool Return(T obj)
         {
-            for (int i = 0; i < _items.Length; i++)
+            if(obj==null)
+                return false;
+            if(_count>_items.Length)
             {
-                if (_items[i] == null)
-                    _items[i] = obj;
+                return false;
+            }
+            else
+            {
+                _items[_count++] = obj;
+                return false;
             }
         }
     }

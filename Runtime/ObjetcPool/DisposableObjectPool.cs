@@ -8,10 +8,10 @@ namespace UnityLib.Pool
         public DisposableObjectPool(IPooledObjectPolicy<T> policy):base(policy){}
         public DisposableObjectPool(IPooledObjectPolicy<T> policy, int maximumRetained): base(policy, maximumRetained){}
 
-        public override void Return(T obj)
+        public override bool Return(T obj)
         {
             DisposeItem(obj);
-            base.Return(obj);
+            return base.Return(obj);
         }
 
         public void Dispose()
