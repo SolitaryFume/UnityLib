@@ -2,6 +2,8 @@
 using System.Threading;
 using UnityEngine;
 using UnityLib.Net;
+using Proto;
+using System;
 
 public class PlayerInput:MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class PlayerInput:MonoBehaviour
     [SerializeField] private int port = 8888;
 
     [SerializeField] private int m_fps = 15;
-    private uint frame;
+    private int frame;
 
     private void Awake()
     {
@@ -22,14 +24,25 @@ public class PlayerInput:MonoBehaviour
     {
         if (PlayerManager.Instance.playerType == PlayerManager.PlayerType.Net)
         {
-            //udpServer = new UdpServer(ip, port);
-            //udpServer.socketProxy.messageHandle += NetManagerHandle.MessageHandle;
-            //udpServer.socketProxy.messageSerialize += Proto.ProroHelp.Encoder;
-            //udpServer.socketProxy.messageDeSerialization += Proto.ProroHelp.Decoder;
+            udpServer = new UdpServer();
+            udpServer.Connect(ip, port);
+            udpServer.onReceiveMessage += NetManagerHandle.MessageHandle;
+            udpServer.serialize += Proto.ProtoHelp.Encoder;
+            udpServer.deserialize += Proto.ProtoHelp.Decoder;
+            udpServer.StartReceive();
+            udpServer.SendMessage(new JoinRoomRequest() { });
+            Debug.Log("udpServer start succeed !");
         }
 
+        
+    }
+
+    public async void StartSync()
+    {
+        if (source != null && !source.IsCancellationRequested)
+            return;
+
         var tickTime = Mathf.RoundToInt(1000f / m_fps);
-        Debug.LogError("tickTime:"+tickTime);
         source = new CancellationTokenSource();
         while (!source.IsCancellationRequested)
         {
@@ -37,6 +50,11 @@ public class PlayerInput:MonoBehaviour
             frame++;
             InputTick();
         }
+    }
+
+    public void StopSync()
+    {
+        source?.Cancel();
     }
 
     private void OnDestroy()
@@ -58,23 +76,24 @@ public class PlayerInput:MonoBehaviour
             direction = direction >= 0 ? direction+1 : 361 + direction;
         }
 
-        var frameInput = new Frame()
+        var frameInput = new FrameInfo()
         {
-            index = frame,
+            tick = frame,
             direction = (ushort)direction,
         };
-
+        ReadOnlySpan<byte> d = Proto.ProtoHelp.Encoder(frameInput);
+        var mg = Proto.ProtoHelp.Decoder(d.Slice(4));
         switch (PlayerManager.Instance.playerType)
         {
             case PlayerManager.PlayerType.Single:
-                PlayerManager.Instance.Execute(new Frame[1] { frameInput });
+                PlayerManager.Instance.Execute(new FrameInfo[1] { frameInput });
                 break;
             case PlayerManager.PlayerType.Net:
                 udpServer.SendMessage(frameInput);
-                PlayerManager.Instance.Execute(new Frame[1] { frameInput });
+                PlayerManager.Instance.Execute(new FrameInfo[1] { frameInput });
                 break;
             case PlayerManager.PlayerType.Playback:
-                PlayerManager.Instance.Execute(new Frame[1] { frameInput });
+                PlayerManager.Instance.Execute(new FrameInfo[1] { frameInput });
                 break;
             default:
                 break;

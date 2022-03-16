@@ -3,7 +3,7 @@ using ProtoBuf;
 namespace Proto
 {
     [ProtoContract]
-    public class RegisterAccountRequest: IMessage
+    public class RegisterAccountRequest : IMessage
     {
         [ProtoMember(1)]
         public string Account { get; set; }

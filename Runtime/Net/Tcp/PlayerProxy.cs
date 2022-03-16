@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using Proto;
+using UnityEngine;
 
-public class PlayerProxy : MonoBehaviour, IProxy<Frame>
+public class PlayerProxy : MonoBehaviour, IProxy<FrameInfo>
 {
     [SerializeField] private float speed = 1;
     private float tickTime;
     private float step;
 
-    public void Execute(Frame frame)
+    public void Execute(FrameInfo frame)
     {
         if (frame.direction != 0)
         {
@@ -39,7 +40,7 @@ public class PlayerProxy : MonoBehaviour, IProxy<Frame>
         transform.position = Vector3.Lerp(startPosition,targetPosition, tickTime/ step);
     }
 
-    public void Reset(Frame data)
+    public void Reset(FrameInfo data)
     {
         
     }

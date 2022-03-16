@@ -30,12 +30,11 @@ namespace UnityLib.Net
 
         public void SendMessage(IMessage message)
         {
-            Byte[] msgDt = serialize.Invoke(message).ToArray();
-            var l = msgDt.Length + sizeof(int);
-            var data = new byte[l];
-            Array.Copy(BitConverter.GetBytes(l), data,sizeof(int));
-            Array.Copy(msgDt, 0, data, sizeof(int), msgDt.Length);
-            m_udp.SendAsync(data,l);
+            Byte[] data = serialize.Invoke(message).ToArray();
+            //var l = msgDt.Length + sizeof(int);
+            //var data = new byte[l];
+           
+            m_udp.SendAsync(data, data.Length);
         }
 
         private void OnReceiveMessage(IMessage message)

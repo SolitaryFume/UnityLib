@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.IO;
+using System;
 using System.Collections.Generic;
+using Proto;
+using UnityLib.Net;
 
-public class PlayerManager : MonoBehaviour
+public partial class PlayerManager : MonoBehaviour
 {
     public enum PlayerType : byte
     {
@@ -30,11 +33,12 @@ public class PlayerManager : MonoBehaviour
             binaryWriiter = new BinaryWriter(operationStream);
         }
 
+        RegisterMessageHanle();
     }
 
     private void InitData()
     {
-        predictFrame = new Stack<Frame[]>();
+        predictFrame = new Stack<FrameInfo[]>();
     }
 
     private void OnDestroy()
@@ -42,6 +46,8 @@ public class PlayerManager : MonoBehaviour
         binaryReader?.Close();
         binaryWriiter?.Close();
         operationStream?.Close();
+
+        UnRegisterMessageHanle();
     }
 
     [SerializeField] private PlayerType m_playerType;
@@ -50,14 +56,15 @@ public class PlayerManager : MonoBehaviour
     private FileStream operationStream;
     private BinaryReader binaryReader;
     private BinaryWriter binaryWriiter;
-    private Frame[] lastframes;
+    private FrameInfo[] lastframes;
 
-    private Stack<Frame[]> predictFrame;
+    private Stack<FrameInfo[]> predictFrame;
 
     public PlayerType playerType => m_playerType;
 
+    [SerializeField] private PlayerInput playerInput;
     [SerializeField] private PlayerProxy[] proxies;
-    public void Execute(Frame[] frames)
+    public void Execute(FrameInfo[] frames)
     {
         if (playerType == PlayerType.Playback)
         {
@@ -96,20 +103,29 @@ public class PlayerManager : MonoBehaviour
     }
 }
 
-
-public static class MessageBinary
+public partial class PlayerManager
 {
-    public static void Write(this BinaryWriter writer, Frame frame)
+    private IDisposable listening_FramePack;
+    private IDisposable listening_StartRoomSync;
+
+    public void RegisterMessageHanle()
     {
-        writer.Write(frame.index);
-        writer.Write(frame.direction);
+        listening_FramePack = NetManagerHandle.Register<FramePackage>(FramePackHandle);
+        listening_StartRoomSync = NetManagerHandle.Register<StartRoomSync>(StartRoomSyncHandle);
     }
 
-    public static Frame ReadFrame(this BinaryReader reader)
+    private void UnRegisterMessageHanle()
     {
-        var frame = new Frame();
-        frame.index = reader.ReadUInt32();
-        frame.direction = reader.ReadUInt16();
-        return frame;
+        listening_FramePack.Dispose();
+    }
+
+    public void FramePackHandle(FramePackage package)
+    {
+        Debug.Log(package.tick);
+    }
+
+    public void StartRoomSyncHandle(StartRoomSync sync)
+    {
+        playerInput.StartSync();
     }
 }

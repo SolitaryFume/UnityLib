@@ -1,8 +1,6 @@
 ﻿using System.Net.Sockets;
 using System;
 using System.Threading;
-using System.Collections.Generic;
-using Proto;
 
 namespace UnityLib.Net
 {
@@ -70,14 +68,6 @@ namespace UnityLib.Net
         private void OnReceive(T message)
         {
             messageHandle?.Invoke(message);
-        }
-    }
-
-    public class NetManagerHandle
-    {
-        public static void MessageHandle(IMessage message)
-        {
-
         }
     }
 }
